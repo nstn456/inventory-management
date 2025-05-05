@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Location</title>
+</head>
+<body>
+    <h2>Edit Location</h2>
+    <form action="/edit_location/{{ location[0] }}" method="POST">
+        <label>Location ID:</label>
+        <input type="text" value="{{ location[0] }}" required><br><br>
+        <label>Location Name:</label>
+        <input name="location_name" value="{{ location[1] }}" required><br><br>
+        <button type="submit">Save</button>
+    </form>
+    <a href="/">Back to Dashboard</a>
+</body>
+</html>
+

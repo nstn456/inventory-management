@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product</title>
+</head>
+<body>
+    <h2>Edit Product</h2>
+    <form action="/edit_product/{{ product[0] }}" method="POST">
+        <label>Product ID:</label>
+        <input type="text" value="{{ product[0] }}" required><br><br>
+        <label>Product Name:</label>
+        <input name="product_name" value="{{ product[1] }}" required><br><br>
+        <button type="submit">Save</button>
+    </form>
+    <a href="/">Back to Dashboard</a>
+</body>
+</html>
+

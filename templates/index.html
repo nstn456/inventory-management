@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .tabs { overflow: hidden; background: #333; }
+        .tabs button {
+            background: #333; color: white; float: left; border: none;
+            outline: none; cursor: pointer; padding: 14px 16px;
+            transition: 0.3s; font-size: 17px;
+        }
+        .tabs button:hover { background: #444; }
+        .tabs button.active { background: #666; }
+        .tab-content { display: none; padding: 20px; background: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        input, select { padding: 5px; margin: 5px; }
+        a.edit-link { color: blue; margin-left: 10px; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Inventory Management Dashboard</h1>
+
+<div class="tabs">
+    <button class="tablink" onclick="openTab(event, 'Products')" id="defaultTab">Products</button>
+    <button class="tablink" onclick="openTab(event, 'Locations')">Locations</button>
+    <button class="tablink" onclick="openTab(event, 'Movements')">Product Movements</button>
+    <button class="tablink" onclick="openTab(event, 'Report')">Inventory Report</button>
+</div>
+
+<div id="Products" class="tab-content">
+    <h2>Products</h2>
+    <form action="/add_product" method="POST">
+        <input name="product_id" placeholder="Product ID" required>
+        <input name="product_name" placeholder="Product Name" required>
+        <button type="submit">Add Product</button>
+    </form>
+    <table>
+        <thead>
+        <tr><th>Product ID</th><th>Product Name</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product[0] }}</td>
+            <td>{{ product[1] }}</td>
+            <td><a class="edit-link" href="/edit_product/{{ product[0] }}">Edit</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="Locations" class="tab-content">
+    <h2>Locations</h2>
+    <form action="/add_location" method="POST">
+        <input name="location_id" placeholder="Location ID" required>
+        <input name="location_name" placeholder="Location Name" required>
+        <button type="submit">Add Location</button>
+    </form>
+    <table>
+        <thead>
+        <tr><th>Location ID</th><th>Location Name</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for location in locations %}
+        <tr>
+            <td>{{ location[0] }}</td>
+            <td>{{ location[1] }}</td>
+            <td><a class="edit-link" href="/edit_location/{{ location[0] }}">Edit</a></td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="Movements" class="tab-content">
+    <h2>Product Movements</h2>
+    <form action="/add_movement" method="POST">
+        <input name="product_id" placeholder="Enter Product" required>
+        <input name="from_location" placeholder="From location" required>
+        <input name="to_location" placeholder="To location" required>
+        <input name="qty" type="number" placeholder="Quantity" required>
+        <button type="submit">Add Movement</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>Movement ID</th>
+            <th>Timestamp</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for move in movements %}
+        <tr>
+            <td>{{ move[0] }}</td>
+            <td>{{ move[1] }}</td>
+            <td>{{ move[2] or 'N/A' }}</td>
+            <td>{{ move[3] or 'N/A' }}</td>
+            <td>{{ move[4] }}</td>
+            <td>{{ move[5] }}</td>
+            <td><a class="edit-link" href="/edit_movement/{{ move[0] }}">Edit</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="Report" class="tab-content">
+    <h2>Inventory Report</h2>
+    <table>
+        <thead>
+        <tr><th>Product ID</th><th>Location ID</th><th>Quantity</th></tr>
+        </thead>
+        <tbody>
+        {% for key, qty in balance.items() %}
+        <tr>
+            <td>{{ key[0] }}</td>
+            <td>{{ key[1] }}</td>
+            <td>{{ 'Out of stock' if qty < 0 else qty }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    document.getElementById("defaultTab").click();
+</script>
+
+</body>
+</html>
